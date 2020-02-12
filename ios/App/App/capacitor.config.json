@@ -1,0 +1,8 @@
+{
+  "appId": "com.leo.music",
+  "appName": "Leo music",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "cordova": {}
+}
