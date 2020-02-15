@@ -10,7 +10,7 @@
   <h1>Artistas</h1>
   <ion-slides [options]="slideOpts" *ngIf="artists.length">
     <ion-slide *ngFor="let artist of artists">
-      <ion-avatar (click)="showSongs(artist)" >
+      <ion-avatar (click)="showSongs(artist)">
         <img [src]="artist.images[0].url" alt="avatar">
         <span>{{artist.name}}</span>
       </ion-avatar>
@@ -20,7 +20,7 @@
   <h1>Album</h1>
   <ion-slides [options]="slideOpts" *ngIf="albums.length">
     <ion-slide *ngFor="let album of albums">
-      <ion-avatar class="square-avatar">
+      <ion-avatar class="square-avatar" (click)="showSongs(album)" >
         <img [src]="album.images[0].url" alt="avatar">
         <span>{{album.name}}</span>
       </ion-avatar>
@@ -40,11 +40,32 @@
 
 
 <ion-footer>
-  <ion-text color="danger" *ngIf="!song.name">
-    Aqui aparecera a cancion
-  </ion-text>
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-start">{{ parseTime(currentSong.currentTime) || '0.00'}}</ion-col>
+      <ion-col class="ion-text-end">{{ parseTime(currentSong.duration) || '0.00'}}</ion-col>
+    </ion-row>
+  </ion-grid>
 
-  <ion-text color="primary" *ngIf="song.name">
-    <h2>{{song.name}}</h2>
-  </ion-text>
+  <ion-progress-bar [value]="newTime"></ion-progress-bar>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col size="1">
+        <ion-icon name="heart"></ion-icon>
+      </ion-col>
+
+      <ion-col size="10">
+        <ion-text>
+          {{song.name || 'Aún no has seleccionado canción'}}
+        </ion-text>
+      </ion-col>
+
+      <ion-col size="1">
+        <ion-icon name="play" (click)="play()" *ngIf="!song.playing" ></ion-icon>
+        <ion-icon name="pause" (click)="pause()" *ngIf="song.playing" ></ion-icon>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
 </ion-footer>
