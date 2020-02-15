@@ -23,4 +23,9 @@ export class PlatziMusicService {
     const api = `https://platzi-music-api.now.sh/artists/${artistId}/top-tracks?country=CO`;
     return this.http.get(api);
   }
+
+  getAlbumTracks(albumId): Observable<any> {
+    const api = `https://platzi-music-api.now.sh/albums/${albumId}/tracks?country=CO`;
+    return this.http.get(api);
+  }
 }

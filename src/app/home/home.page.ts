@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { forkJoin } from 'rxjs';
-import { mergeMap, tap } from 'rxjs/operators';
+import { forkJoin, fromEvent, Observable } from 'rxjs';
+import { mergeMap, tap, takeUntil } from 'rxjs/operators';
 
 import { PlatziMusicService } from '../services/platzi-music.service';
 import { SongsModalPage } from '../songs-modal/songs-modal.page';
@@ -23,6 +23,8 @@ export class HomePage {
   albums: any[] = [];
   artists: any[] = [];
   song: any = {};
+  newTime;
+  currentSong = new Audio();
 
   constructor(
     private musicService: PlatziMusicService,
@@ -41,29 +43,86 @@ export class HomePage {
     });
   }
 
-  showSongs(artist) {
-    let modalRef;
-    this.musicService.getArtistTopTrack(artist.id).pipe(
-      tap(data => console.log(data)),
-      mergeMap((songs: any) => this.modalController.create({
-        component: SongsModalPage,
-        componentProps: {
-          songs: songs.tracks,
-          artist: artist.name
+  showSongs(element) {
+    console.log(element);
+    let sourceData: Observable<any>;
+    const isArtist = element.type === 'artist';
+    let songsList: any;
+    let modalRef: HTMLIonModalElement;
+    let title: string;
+    if (isArtist) {
+      sourceData = this.musicService.getArtistTopTrack(element.id);
+      title = element.name + ' Top Tracks';
+    } else {
+      sourceData = this.musicService.getAlbumTracks(element.id);
+      title = element.name + ' Album Tracks';
+    }
+
+    sourceData.pipe(
+      mergeMap((songs: any) => {
+        if (isArtist) {
+          songsList = songs.tracks;
+        } else {
+          songsList = songs.items;
         }
-      }))
+        return this.modalController.create({
+          component: SongsModalPage,
+          componentProps: {
+            songs: songsList,
+            title,
+            type: element.type
+          }
+        });
+      }
+      )
     ).subscribe((modal) => {
       modalRef = modal;
-
       modalRef.onDidDismiss().then(dataReturned => {
         if (dataReturned) {
           this.song = dataReturned.data;
         }
       });
-
-
       modalRef.present();
     });
+
   }
+
+  play() {
+    const songUrl = this.song.preview_url;
+    if (songUrl) {
+      this.currentSong.src = this.song.preview_url;
+      this.currentSong.play();
+      this.currentSong.addEventListener('timeupdate', () => {
+        this.newTime = (this.currentSong.currentTime / this.currentSong.duration);
+      });
+      this.song.playing = true;
+    } else {
+      // TODO: implementar
+      console.log('No se pudo cargar la canción');
+    }
+
+  }
+
+  pause() {
+    this.currentSong.pause();
+    this.song.playing = false;
+  }
+
+  parseTime(time = '0:00') {
+    if (time) {
+      const partTime = parseInt(time.toString().split('.')[0], 10);
+      let minutes = Math.floor(partTime / 60).toString();
+      if (minutes.length === 1) {
+        minutes = '0' + minutes;
+      }
+
+      let seconds = (partTime % 60).toString();
+      if (seconds.length === 1) {
+        seconds = '0' + seconds;
+      }
+      return minutes + ':' + seconds;
+    }
+  }
+
 
 }
