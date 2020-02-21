@@ -4,27 +4,27 @@ import { IntroGuard } from './guards/intro.guard';
 import { LoginGuard } from './guards/login.guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'menu/home', pathMatch: 'full' },
+  { path: '', redirectTo: 'menu', pathMatch: 'full' },
+  {
+    path: 'menu',
+    loadChildren: () => import('./menu/menu.module').then(m => m.MenuPageModule),
+    canActivate: [IntroGuard, LoginGuard]
+  },
   {
     path: 'intro',
     loadChildren: () => import('./intro/intro.module').then(m => m.IntroPageModule)
   },
   {
     path: 'login',
-    loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
+    loadChildren: () => import('./login/login.module').then(m => m.LoginPageModule)
   },
   {
     path: 'register',
-    loadChildren: () => import('./register/register.module').then( m => m.RegisterPageModule)
-  },
-  {
-    path: 'menu',
-    loadChildren: () => import('./menu/menu.module').then( m => m.MenuPageModule),
-    canActivate: [IntroGuard, LoginGuard]
+    loadChildren: () => import('./register/register.module').then(m => m.RegisterPageModule)
   },
   {
     path: 'songs-modal',
-    loadChildren: () => import('./songs-modal/songs-modal.module').then( m => m.SongsModalPageModule)
+    loadChildren: () => import('./songs-modal/songs-modal.module').then(m => m.SongsModalPageModule)
   },
 ];
 
