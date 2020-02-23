@@ -1,0 +1,25 @@
+<ion-searchbar (ionChange)="onChangeInput($event.detail.value)" debounce="300"></ion-searchbar>
+<ion-content>
+  <ion-list *ngIf="listTracks as tracks">
+    <ion-item *ngFor="let track of tracks">
+      <ion-grid>
+        <ion-row>
+          
+          <ion-col size="10">{{track.name}}</ion-col>
+          
+          <ion-col size="1">
+            <ion-icon name="pause" (click)="pause()" *ngIf="isSelected(track) && playing"></ion-icon>
+          </ion-col>
+
+          <ion-col size="1">
+            <ion-icon name="play" (click)="play(track)" *ngIf="!(isSelected(track) && playing)" ></ion-icon>
+            <ion-spinner name="dots" *ngIf="isSelected(track) && playing"></ion-spinner>
+          </ion-col>
+
+
+        </ion-row>
+      </ion-grid>
+
+    </ion-item>
+  </ion-list>
+</ion-content>

@@ -28,4 +28,9 @@ export class PlatziMusicService {
     const api = `https://platzi-music-api.now.sh/albums/${albumId}/tracks?country=CO`;
     return this.http.get(api);
   }
+
+  searchTracks(text: string) {
+    const api = `https://platzi-music-api.now.sh/search?q=${text}&type=track`;
+    return  this.http.get(api);
+  }
 }

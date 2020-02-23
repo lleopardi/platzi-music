@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>sports</ion-title>
+    <ion-buttons slot="end">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div *ngIf="(options$ | async) as options" class="map" leaflet [leafletOptions]="options" [leafletLayers]="layer"
+    [leafletCenter]="currentCenter">
+  </div>
+
+
+  <app-tracks-finder>
+
+  </app-tracks-finder>
+
+</ion-content>
